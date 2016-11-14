@@ -1,0 +1,24 @@
+{
+  "name": "wikipedia-viewer",
+  "homepage": "https://github.com/Ovelny/wikipedia-viewer",
+  "authors": [
+    "Ovelny <this.is.ovelny@gmail.com>"
+  ],
+  "description": "A search box for Wikipedia entries",
+  "main": "index.html",
+  "keywords": [
+    "wikipedia",
+    "viewer"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "spectre.css": "^0.1.26"
+  }
+}
