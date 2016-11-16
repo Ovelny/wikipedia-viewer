@@ -5,10 +5,23 @@
     <meta charset="UTF-8">
     <title>Wikipedia-viewer</title>
     <link rel="stylesheet" href="css/spectre.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <h1>Hello !</h1>
+    <section id="search-bar" class="grid-hero container grid-960">
+        <header class="text-center">
+            <h3>Search any wikipedia page</h3>
+        </header>
+        <div class="input-group">
+            <input type="text" class="form-input input-lg" placeholder="Add a title, name, etc..." />
+            <button class="btn btn-lg btn-primary input-group-btn">Submit</button>
+        </div>
+    </section>
+
+    <section id="search-result" class="container grid-960">
+        <div class="loading"></div>
+    </section>
 </body>
 
 </html>
