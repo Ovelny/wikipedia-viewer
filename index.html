@@ -13,15 +13,29 @@
         <header class="text-center">
             <h3>Search any wikipedia page</h3>
         </header>
-        <div class="input-group">
-            <input type="text" class="form-input input-lg" placeholder="Add a title, name, etc..." />
+        <div class="input-group form-autocomplete">
+            <input id="search-field" type="text" class="form-input input-lg" placeholder="Add a title, name, etc..." />
             <button id="search-btn" class="btn btn-lg btn-primary input-group-btn">Submit</button>
             <a href="https://en.wikipedia.org/wiki/Special:Random" target="_blank" class="btn btn-lg btn-primary input-group-btn">Random article</a>
-        </div>
-    </section>
 
-    <section id="search-result" class="container grid-960">
-        <div class="loading"></div>
+            <ul id="search-result" class="form-autocomplete-list">
+                <li class="form-autocomplete-item">
+                    <div class="chip hand">
+                        <div class="chip-content">
+                            Test
+                        </div>
+                    </div>
+                </li>
+
+                <li class="form-autocomplete-item">
+                    <div class="chip hand">
+                        <div class="chip-content">
+                            Test 2
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </section>
 
     <script src="js/script.js"></script>
