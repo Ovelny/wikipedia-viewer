@@ -2,3 +2,7 @@
     margin-top: 10rem;
     margin-bottom: 10rem;
 }
+
+.ghost {
+    opacity: 0.0;
+}

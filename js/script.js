@@ -29,7 +29,23 @@ document.getElementById('search-field').addEventListener('input', function (even
     }
 
     request.onload = function () {
-        const response = request.responseText
+        const response = JSON.parse(request.responseText)
+        console.log(response)
+
+        let el = document.querySelector(".ghost")
+        if (document.querySelector(".ghost") != null) {
+            if (el.classList)
+                el.classList.remove('ghost')
+            else
+                el.ghost = el.ghost.replace(new RegExp('(^|\\b)' + ghost.split(' ').join('|') + '(\\b|$)', 'gi'), ' ')
+        }
+
+        for (let i = 0; i < 5; i++) {
+            let article = response[1][i]
+            let ul = document.getElementById('search-result')
+            ul.insertAdjacentHTML('afterbegin', '<li class="form-autocomplete-item"><div class="chip hand"><div class="chip-content">' + article + '</div></div></li>')
+
+        }
     }
 
     request.onerror = function () {
@@ -37,7 +53,6 @@ document.getElementById('search-field').addEventListener('input', function (even
     }
 
     request.send()
-
 })
 
 
