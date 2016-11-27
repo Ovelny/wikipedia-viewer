@@ -28,3 +28,7 @@ a:hover {
 .ghost {
     opacity: 0.0;
 }
+
+li:focus {
+    outline:none !important;
+}
