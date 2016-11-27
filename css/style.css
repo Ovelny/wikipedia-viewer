@@ -29,6 +29,6 @@ a:hover {
     opacity: 0.0;
 }
 
-li:focus {
-    outline:none !important;
+:focus {
+    outline-color: #2196F3;;
 }
