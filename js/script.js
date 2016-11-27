@@ -26,6 +26,8 @@ function navigateList() {
 
     const up = 38
     const down = 40
+    const enter = 13
+
 
     document.onkeydown = function (event) {
         event = event || window.event
@@ -58,6 +60,10 @@ function navigateList() {
                 }
                 break
 
+            case enter:
+                document.activeElement.click()
+                break
+
             default: search.focus()
 
         }
@@ -77,15 +83,26 @@ document.getElementById('search-field').addEventListener('input', function (even
 
     // when request is successful, parse the result as JSON...
     request.onload = function () {
-        const response = JSON.parse(request.responseText)
 
         //... unhide the <ul> containing all the suggestions
         let el = document.querySelector(".ghost")
         if (document.querySelector(".ghost") != null) {
             if (el.classList)
                 el.classList.remove('ghost')
-            else
-                el.ghost = el.ghost.replace(new RegExp('(^|\\b)' + ghost.split(' ').join('|') + '(\\b|$)', 'gi'), ' ')
+        }
+
+        if (searchPredictUrl === 'https://crossorigin.me/http://en.wikipedia.org/w/api.php?action=opensearch&search=') {
+            let el = document.getElementById('search-result')
+            while (el.firstChild) {
+                el.removeChild(el.firstChild)
+            }
+
+            if (el.classList)
+                el.classList.add('ghost')
+
+        }
+        else {
+            var response = JSON.parse(request.responseText)
         }
 
         //... if suggestions are already present, delete them first
@@ -97,14 +114,19 @@ document.getElementById('search-field').addEventListener('input', function (even
         }
 
         //... and insert suggestions from the API
-        for (let i = 0; i < response[1].length; i++) {
-            let articleTitle = response[1][i]
-            let articleSubtitle = response[2][i]
-            let articleLink = response[3][i]
-            ul.insertAdjacentHTML('beforeend', '<a href=' + articleLink + '><li id="search-item" class="form-autocomplete-item"><div class="chip hand"><div class="chip-content"><h6>' + articleTitle + '</h6><p>' + articleSubtitle + '</p></div></div></li></a>')
+        if (searchPredictUrl !== 'https://crossorigin.me/http://en.wikipedia.org/w/api.php?action=opensearch&search=' && response[1].length >= 1) {
+            for (let i = 0; i < response[1].length; i++) {
+                let articleTitle = response[1][i]
+                let articleSubtitle = response[2][i]
+                let articleLink = response[3][i]
+                ul.insertAdjacentHTML('beforeend', '<a href=' + articleLink + '><li id="search-item" class="form-autocomplete-item"><div class="chip hand"><div class="chip-content"><h6>' + articleTitle + '</h6><p>' + articleSubtitle + '</p></div></div></li></a>')
+            }
+        }
+        else {
+            ul.insertAdjacentHTML('beforeend', '<li id="search-item" class="form-autocomplete-item"><div class="chip hand"><div class="chip-content"><h6>Nothing found! Try another search</h6></div></div></li>')
         }
 
-        // focus on first <li> element and enable arrows navigation
+        // enable arrows navigation
         navigateList()
     }
 
