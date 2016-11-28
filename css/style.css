@@ -32,3 +32,9 @@ a:hover {
 :focus {
     outline-color: #2196F3;;
 }
+
+.random-btn:hover {
+    background: #0d8aee !important;
+    border-color: #0c7cd5 !important;
+    color: #fff !important;
+}
