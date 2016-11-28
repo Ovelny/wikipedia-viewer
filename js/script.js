@@ -70,6 +70,22 @@ function navigateList() {
     }
 }
 
+// truncate description of articles
+function truncate() {
+    const len = 10
+    const description = document.getElementById(articleSubtitle)
+
+    if (description) {
+        const trunc = description.innerHTML
+        if (trunc.length > len) {
+            trunc = trunc.substring(0, len)
+            trunc = trunc.replace(/\w+$/, '')
+            trunc += '...'
+            description.innerHTML = trunc
+        }
+    }
+}
+
 // watch for changes on search-bar and assign the results
 document.getElementById('search-field').addEventListener('input', function (event) {
     const userInput = document.getElementById('search-field').value
@@ -119,7 +135,8 @@ document.getElementById('search-field').addEventListener('input', function (even
                 let articleTitle = response[1][i]
                 let articleSubtitle = response[2][i]
                 let articleLink = response[3][i]
-                ul.insertAdjacentHTML('beforeend', '<a href=' + articleLink + '><li id="search-item" class="form-autocomplete-item"><div class="chip hand"><div class="chip-content"><h6>' + articleTitle + '</h6><p>' + articleSubtitle + '</p></div></div></li></a>')
+                ul.insertAdjacentHTML('beforeend', '<a href=' + articleLink + '><li id="search-item" class="form-autocomplete-item"><div class="chip hand"><div class="chip-content"><h6>' + articleTitle + '</h6><p id="articleSubtitle">' + articleSubtitle + '</p></div></div></li></a>')
+                truncate()
             }
         }
         else {
