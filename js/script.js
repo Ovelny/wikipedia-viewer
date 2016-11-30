@@ -97,6 +97,10 @@ document.getElementById('search-field').addEventListener('input', function (even
         throw new Error('CORS is not supported')
     }
 
+    request.onprogress = function () {
+        let ul = document.getElementById('search-result')
+        ul.insertAdjacentHTML('beforeend', '<div class="loading"></div>')
+    }
     // when request is successful, parse the result as JSON...
     request.onload = function () {
 
@@ -152,10 +156,6 @@ document.getElementById('search-field').addEventListener('input', function (even
         console.log('error with request')
     }
 
-    request.onprogress = function () {
-        let ul = document.getElementById('search-result')
-        ul.insertAdjacentHTML('beforeend', '<div class="loading"></div>')
-    }
 
     request.send()
 })
