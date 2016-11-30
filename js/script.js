@@ -71,7 +71,7 @@ function navigateList() {
 }
 
 // truncate description of articles
-function truncate() {
+/*function truncate() {
     const len = 10
     const description = document.getElementById(articleSubtitle)
 
@@ -84,7 +84,7 @@ function truncate() {
             description.innerHTML = trunc
         }
     }
-}
+}*/
 
 // watch for changes on search-bar and assign the results
 document.getElementById('search-field').addEventListener('input', function (event) {
@@ -136,7 +136,7 @@ document.getElementById('search-field').addEventListener('input', function (even
                 let articleSubtitle = response[2][i]
                 let articleLink = response[3][i]
                 ul.insertAdjacentHTML('beforeend', '<a href=' + articleLink + '><li id="search-item" class="form-autocomplete-item"><div class="chip hand"><div class="chip-content"><h6>' + articleTitle + '</h6><p id="articleSubtitle">' + articleSubtitle + '</p></div></div></li></a>')
-                truncate()
+                //truncate()
             }
         }
         else {
@@ -150,6 +150,11 @@ document.getElementById('search-field').addEventListener('input', function (even
     // if an error occurrs with CORS, throw a warning in console
     request.onerror = function () {
         console.log('error with request')
+    }
+
+    request.onprogress = function () {
+        let ul = document.getElementById('search-result')
+        ul.insertAdjacentHTML('beforeend', '<div class="loading"></div>')
     }
 
     request.send()
