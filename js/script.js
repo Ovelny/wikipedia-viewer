@@ -70,26 +70,10 @@ function navigateList() {
     }
 }
 
-// truncate description of articles
-/*function truncate() {
-    const len = 10
-    const description = document.getElementById(articleSubtitle)
-
-    if (description) {
-        const trunc = description.innerHTML
-        if (trunc.length > len) {
-            trunc = trunc.substring(0, len)
-            trunc = trunc.replace(/\w+$/, '')
-            trunc += '...'
-            description.innerHTML = trunc
-        }
-    }
-}*/
-
 // watch for changes on search-bar and assign the results
 document.getElementById('search-field').addEventListener('input', function (event) {
     const userInput = document.getElementById('search-field').value
-    const searchPredictUrl = 'https://crossorigin.me/http://en.wikipedia.org/w/api.php?action=opensearch&search=' + userInput
+    const searchPredictUrl = 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + userInput + '&utf8=&origin=*'
 
     // Make the API call unless CORS isn't supported
     const request = CORSRequest('GET', searchPredictUrl)
@@ -97,13 +81,14 @@ document.getElementById('search-field').addEventListener('input', function (even
         throw new Error('CORS is not supported')
     }
 
+    // display a spinner in case of a slow request
     request.onprogress = function () {
         let ul = document.getElementById('search-result')
         ul.insertAdjacentHTML('beforeend', '<div class="loading"></div>')
     }
+
     // when request is successful, parse the result as JSON...
     request.onload = function () {
-
         //... unhide the <ul> containing all the suggestions
         let el = document.querySelector(".ghost")
         if (document.querySelector(".ghost") != null) {
@@ -111,7 +96,7 @@ document.getElementById('search-field').addEventListener('input', function (even
                 el.classList.remove('ghost')
         }
 
-        if (searchPredictUrl === 'https://crossorigin.me/http://en.wikipedia.org/w/api.php?action=opensearch&search=') {
+        if (searchPredictUrl === 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=&utf8=&origin=*') {
             let el = document.getElementById('search-result')
             while (el.firstChild) {
                 el.removeChild(el.firstChild)
@@ -123,6 +108,7 @@ document.getElementById('search-field').addEventListener('input', function (even
         }
         else {
             var response = JSON.parse(request.responseText)
+            console.log(response)
         }
 
         //... if suggestions are already present, delete them first
@@ -134,13 +120,12 @@ document.getElementById('search-field').addEventListener('input', function (even
         }
 
         //... and insert suggestions from the API
-        if (searchPredictUrl !== 'https://crossorigin.me/http://en.wikipedia.org/w/api.php?action=opensearch&search=' && response[1].length >= 1) {
-            for (let i = 0; i < response[1].length; i++) {
-                let articleTitle = response[1][i]
-                let articleSubtitle = response[2][i]
-                let articleLink = response[3][i]
+        if (searchPredictUrl !== 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=&utf8=&origin=*' && response.query.search.length >= 1) {
+            for (let i = 0; i < response.query.search.length; i++) {
+                let articleTitle = response.query.search[i].title
+                let articleSubtitle = response.query.search[i].snippet
+                let articleLink = 'jk'
                 ul.insertAdjacentHTML('beforeend', '<a href=' + articleLink + '><li id="search-item" class="form-autocomplete-item"><div class="chip hand"><div class="chip-content"><h6>' + articleTitle + '</h6><p id="articleSubtitle">' + articleSubtitle + '</p></div></div></li></a>')
-                //truncate()
             }
         }
         else {
