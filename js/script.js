@@ -73,7 +73,7 @@ function navigateList() {
 // watch for changes on search-bar and assign the results
 document.getElementById('search-field').addEventListener('input', function (event) {
     const userInput = document.getElementById('search-field').value
-    const searchPredictUrl = 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + userInput + '&utf8=&origin=*'
+    const searchPredictUrl = 'https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=' + userInput + '&format=json&gsrprop=snippet&prop=info&inprop=url'
 
     // Make the API call unless CORS isn't supported
     const request = CORSRequest('GET', searchPredictUrl)
@@ -96,7 +96,7 @@ document.getElementById('search-field').addEventListener('input', function (even
                 el.classList.remove('ghost')
         }
 
-        if (searchPredictUrl === 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=&utf8=&origin=*') {
+        if (searchPredictUrl === 'https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=&format=json&gsrprop=snippet&prop=info&inprop=url') {
             let el = document.getElementById('search-result')
             while (el.firstChild) {
                 el.removeChild(el.firstChild)
@@ -120,7 +120,7 @@ document.getElementById('search-field').addEventListener('input', function (even
         }
 
         //... and insert suggestions from the API
-        if (searchPredictUrl !== 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=&utf8=&origin=*' && response.query.search.length >= 1) {
+        if (searchPredictUrl !== 'https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=&format=json&gsrprop=snippet&prop=info&inprop=url' && response.query.search.length >= 1) {
             for (let i = 0; i < response.query.search.length; i++) {
                 let articleTitle = response.query.search[i].title
                 let articleSubtitle = response.query.search[i].snippet
