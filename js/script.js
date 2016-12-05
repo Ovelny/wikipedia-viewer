@@ -18,7 +18,6 @@ function CORSRequest(method, url) {
     return xhr
 }
 
-// handle up/down/enter keys for navigation
 function navigateList() {
     const search = document.getElementById('search-field')
     const list = document.getElementById('search-result')
@@ -70,48 +69,45 @@ function navigateList() {
     }
 }
 
-// watch for changes on search-bar and assign the results
+function unHideList() {
+    let el = document.querySelector(".ghost")
+    if (document.querySelector(".ghost") != null) {
+        if (el.classList)
+            el.classList.remove('ghost')
+    }
+}
+
+function removeChilds() {
+    let el = document.getElementById('search-result')
+    while (el.firstChild) {
+        el.removeChild(el.firstChild)
+    }
+
+    if (el.classList)
+        el.classList.add('ghost')
+
+}
+
 document.getElementById('search-field').addEventListener('input', function (event) {
     const userInput = document.getElementById('search-field').value
-    const searchPredictUrl = 'https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=' + userInput + '&format=json&gsrprop=snippet&prop=info&inprop=url'
+    const searchPredictUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + userInput + '&origin=*'
 
-    // Make the API call unless CORS isn't supported
     const request = CORSRequest('GET', searchPredictUrl)
     if (!request) {
         throw new Error('CORS is not supported')
     }
 
-    // display a spinner in case of a slow request
-    request.onprogress = function () {
-        let ul = document.getElementById('search-result')
-        ul.insertAdjacentHTML('beforeend', '<div class="loading"></div>')
-    }
-
-    // when request is successful, parse the result as JSON...
     request.onload = function () {
-        //... unhide the <ul> containing all the suggestions
-        let el = document.querySelector(".ghost")
-        if (document.querySelector(".ghost") != null) {
-            if (el.classList)
-                el.classList.remove('ghost')
-        }
 
-        if (searchPredictUrl === 'https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=&format=json&gsrprop=snippet&prop=info&inprop=url') {
-            let el = document.getElementById('search-result')
-            while (el.firstChild) {
-                el.removeChild(el.firstChild)
-            }
+        unHideList()
 
-            if (el.classList)
-                el.classList.add('ghost')
-
+        if (searchPredictUrl === 'https://en.wikipedia.org/w/api.php?action=opensearch&search=&origin=*') {
+            removeChilds()
         }
         else {
             var response = JSON.parse(request.responseText)
-            console.log(response)
         }
 
-        //... if suggestions are already present, delete them first
         let ul = document.getElementById('search-result')
         if (ul.hasChildNodes()) {
             while (ul.firstChild) {
@@ -119,12 +115,11 @@ document.getElementById('search-field').addEventListener('input', function (even
             }
         }
 
-        //... and insert suggestions from the API
-        if (searchPredictUrl !== 'https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=&format=json&gsrprop=snippet&prop=info&inprop=url' && response.query.search.length >= 1) {
-            for (let i = 0; i < response.query.search.length; i++) {
-                let articleTitle = response.query.search[i].title
-                let articleSubtitle = response.query.search[i].snippet
-                let articleLink = 'jk'
+        if (searchPredictUrl !== 'https://en.wikipedia.org/w/api.php?action=opensearch&search=&origin=*' && response[1].length >= 1) {
+            for (let i = 0; i < response[1].length; i++) {
+                let articleTitle = response[1][i]
+                let articleSubtitle = response[2][i]
+                let articleLink = response[3][i]
                 ul.insertAdjacentHTML('beforeend', '<a href=' + articleLink + '><li id="search-item" class="form-autocomplete-item"><div class="chip hand"><div class="chip-content"><h6>' + articleTitle + '</h6><p id="articleSubtitle">' + articleSubtitle + '</p></div></div></li></a>')
             }
         }
@@ -132,15 +127,19 @@ document.getElementById('search-field').addEventListener('input', function (even
             ul.insertAdjacentHTML('beforeend', '<li id="search-item" class="form-autocomplete-item"><div class="chip hand"><div class="chip-content"><h6>Nothing found! Try another search</h6></div></div></li>')
         }
 
-        // enable arrows navigation
         navigateList()
     }
 
-    // if an error occurrs with CORS, throw a warning in console
     request.onerror = function () {
-        console.log('error with request')
+        removeChilds()
+        unHideList()
+        if (document.getElementById('search-field').value !== '' && document.getElementById('search-result').hasChildNodes() == false) {
+            document.getElementById('search-result').insertAdjacentHTML('beforeend', '<li id="search-item" class="form-autocomplete-item"><div class="chip hand"><div class="chip-content"><h6>Oops! An error occured, please try again later.</h6></div></div></li>')
+        }
+        else if (document.getElementById('search-field').value === '') {
+            removeChilds()
+        }
     }
-
 
     request.send()
 })
